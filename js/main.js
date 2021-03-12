@@ -1,14 +1,29 @@
-
 class Model {
     constructor() {
         this.c = null;
+        this.counter = 0;
+    }
+    init() {
+        this.createGridArray();
     }
     setController(controller) {
         this.c = controller;
     }
-    init() {
+   
+    setState(s){
+        this.counter = s;
+        this.onSetState();
+    }
+    getState(){
+        return this.counter;
+    }
+    onSetState(){
+        this.c.updateView();
+    }
+    createGridArray(){
         this.array = [];
         for (let i = 0; i < 9; i++) {
+            console.log(this.array)
             this.array.push(0);
         }
     }
@@ -18,6 +33,10 @@ class View {
     constructor() { 
         this.m = null;
     }
+    init(){
+        this.createView();
+    }
+
     setModel(model) {
         this.m = model;
     }
@@ -37,16 +56,22 @@ class View {
     createView() {
         this.app = document.getElementById('app');
         this.header = this.generateHtml("h2", ["text-center"], app, "Hello")
+        this.counter_txt = this.generateHtml("h3", ["text-center"], app, this.m.counter)
         this.container = this.generateHtml("div", ["container", "p-5"], app)
         this.board = this.generateHtml("div", ["row"], this.container)
         for (let i = 0; i < 9; i++) {
-            let col = this.generateHtml("div", ["col-4", "border", "border-2"], this.board, i, this.m.c.listener)
+            let col = this.generateHtml("div", ["col-4", "border", "border-2"], this.board, i, this.m.c.incrementCounter.bind(this));
             col.setAttribute("id", "col" + i)
         }
     }
-    init(){
-        this.createView();
+    render(){
+        this.counter_txt.textContent = this.getState();
     }
+    getState(){
+        var c = this.m.getState();
+        return c;
+    }
+    
 }
 
 class Controller {
@@ -54,12 +79,19 @@ class Controller {
         this.m = model;
         this.v = view;
     }
+    init() {   
+    }
+// Function that can be used to be added to an event listener to increment the counter
     listener(num) {
-        
+        this.incrementCounter();
         console.log("in the click")
     }
-    init() {
-
+// Function that adds one to the counter variable in the Model
+    incrementCounter(){
+        this.m.setState(this.m.counter+1)
+    }
+    updateView(){
+        this.v.render();
     }
 }
 
@@ -75,14 +107,11 @@ class App {
     init() {
         console.log("App is starting")
         this.c.init();
-        this.v.init();
         this.m.init();
-
-
+        this.v.init();
     }
 }
 
-// document.getElementById('app').onload = function(){init()};
 
 function init() {
     let a = new App();
