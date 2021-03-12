@@ -5,17 +5,18 @@ class Model {
     }
     init() {
         this.createGridArray();
+        this.whoseTurn();
     }
     setController(controller) {
         this.c = controller;
     }
-   
     setState(s){
         this.counter = s;
         this.onSetState();
     }
     getState(){
-        return this.counter;
+        this.whoseTurn();
+        return this.turn;
     }
     onSetState(){
         this.c.updateView();
@@ -23,10 +24,24 @@ class Model {
     createGridArray(){
         this.array = [];
         for (let i = 0; i < 9; i++) {
-            console.log(this.array)
+            // console.log(this.array)
             this.array.push(0);
         }
     }
+    whoseTurn(){
+        let playerOne = "Player 1's Turn";
+        let playerTwo = "Player 2's Turn";
+        if (this.counter == 0){
+            this.turn = "Hi"
+        } else if (this.counter > 8){
+            this.turn = "Game over stand in"
+        } else if (this.counter % 2 != 0) {
+            this.turn = playerOne
+        } else if (this.counter % 2 == 0) {
+            this.turn = playerTwo
+        } 
+    }
+
 }
 
 class View {
@@ -56,7 +71,7 @@ class View {
     createView() {
         this.app = document.getElementById('app');
         this.header = this.generateHtml("h2", ["text-center"], app, "Hello")
-        this.counter_txt = this.generateHtml("h3", ["text-center"], app, this.m.counter)
+        this.counter_txt = this.generateHtml("h3", ["text-center"], app, this.m.turn)
         this.container = this.generateHtml("div", ["container", "p-5"], app)
         this.board = this.generateHtml("div", ["row"], this.container)
         for (let i = 0; i < 9; i++) {
@@ -84,11 +99,11 @@ class Controller {
 // Function that can be used to be added to an event listener to increment the counter
     listener(num) {
         this.incrementCounter();
-        console.log("in the click")
     }
 // Function that adds one to the counter variable in the Model
     incrementCounter(){
         this.m.setState(this.m.counter+1)
+        console.log(this.m.counter)
     }
     updateView(){
         this.v.render();
