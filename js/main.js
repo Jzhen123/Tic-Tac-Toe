@@ -15,7 +15,7 @@ class Model {
 }
 
 class View {
-    constructor() {
+    constructor() { 
         this.m = null;
     }
     setModel(model) {
