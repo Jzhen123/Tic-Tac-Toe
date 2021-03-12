@@ -1,3 +1,4 @@
+
 class Model {
     constructor(){
         this.c = null;
@@ -10,21 +11,27 @@ class Model {
 class View {
     constructor(){
         this.m = null;
+        this.app = document.getElementById('app');
+        this.header = this.generateHtml("h2", "text-center", app, "Hello")
+        this.row = this.generateHtml("div", "row", app)
+        for (let i = 0; i < 9; i++){
+             this.generateHtml("div", "col-4", this.row, i)
+
+        }
     }
     setModel(model){
         this.m = model;
     }
-    // constructor() {
-    //     this.x = "0px";
-    //     this.y ="0px";
-    // } 
-    // createGrid (gridX, gridY) {
-    //     let exampleDiv = document.createElement('div');
-    //     exampleDiv.style.width = gridX;
-    //     exampleDiv.style.height = gridY;
-    //     this.x = gridX;
-    //     this.y = gridY;
-    // }
+        generateHtml(type, classes = [], parent = false, text = "", clickFunction = null){
+        const element = document.createElement(type)
+        element.classList.add(classes)
+        element.innerText = text
+        element.addEventListener('click', clickFunction)
+        if (parent) {
+            parent.appendChild(element)
+        }
+        return element
+    }    
 }
 
 class Controller {
@@ -32,6 +39,9 @@ class Controller {
         this.m = model;
         this.v = view;
 
+    }
+    init(){
+        
     }
 }
 
@@ -42,6 +52,7 @@ class App {
         this.v.setModel(this.m);
         this.c = new Controller(this.m, this.v);
         this.m.setController(this.c);
+        
     }
     init(){
         console.log("App is starting")
@@ -49,9 +60,13 @@ class App {
     }
 }
 
+// document.getElementById('app').onload = function(){init()};
 
 function init() {
     let a = new App();
     a.init();
 }
 
+window.onload = function() {
+    init()
+}
