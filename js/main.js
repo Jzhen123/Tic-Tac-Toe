@@ -15,9 +15,10 @@ class View {
     setModel(model){  
         this.m = model;
     }
-    generateHtml(type, classes, parent = false, text = "", clickFunction = null){
+    // Function to create various HTML elements and adding them to the page
+    generateHtml(type, classes = [], parent = false, text = "", clickFunction = null){
         const element = document.createElement(type)
-        element.classList.add(classes)
+        element.classList.add(...classes)
         element.innerText = text
         element.addEventListener('click', clickFunction)
         if (parent) {
@@ -25,21 +26,23 @@ class View {
         }
         return element
     }  
+
+    // Multiple generateHtml functions to create the main view
     createView (){
         this.app = document.getElementById('app');
-        this.header = this.generateHtml("h2", "text-center", app, "Hello")
-        this.board = this.generateHtml("div", "row", app)
+        this.header = this.generateHtml("h2", ["text-center"], app, "Hello")
+        this.board = this.generateHtml("div", ["row"], app)
         for (let i = 0; i < 9; i++){
-            this.generateHtml("div", "col-4", this.board, i)
+            let col = this.generateHtml("div", ["col-4", "bg-primary", "border"], this.board, i)
        }
     }  
+    // Changing columns
 }
 
 class Controller {
     constructor(model, view){
         this.m = model;
         this.v = view;
-
     }
     init(){
         
